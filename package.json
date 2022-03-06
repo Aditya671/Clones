@@ -1,0 +1,33 @@
+{
+  "name": "clones",
+  "version": "1.0.1",
+  "description": "Popular Apps Clones",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aditya671/Clones.git"
+  },
+  "keywords": [
+    "Clones",
+    "Applications",
+    "Single",
+    "Page",
+    "Applications",
+    "React",
+    "Apps",
+    "Google",
+    "Firebase",
+    "Mern Stack Apps",
+    "Apps",
+    "Made By Aditya671"
+  ],
+  "author": "Aditya671",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aditya671/Clones/issues"
+  },
+  "homepage": "https://github.com/Aditya671/Clones#readme"
+}
