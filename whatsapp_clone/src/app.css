@@ -1,0 +1,35 @@
+*{
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+}
+input:focus{
+   outline: none;
+}
+
+.app{
+   background: #dadbd3;
+   height:100vh;
+   display: grid;
+   place-items: center;
+}
+
+.app__body{
+   display: flex;
+   background-color: #ededed;
+   margin-top: -50px;
+   height: 90vh;
+   width: 90vh;
+   box-shadow: -1px 4px 20px -6px rgba(0,0,0,0.2);
+}
+
+@media screen and (max-width:1200px){
+   .app__body{
+      min-width: 1000px;
+   }
+}
+@media screen and (min-width:1201px){
+   .app__body{
+      min-width: 1200px;
+   }
+}
