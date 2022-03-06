@@ -4,7 +4,7 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import {firestoreDb} from './firebase.js'
 import { Link } from 'react-router-dom';
 
-const SidebarChat = ({addNewChat,id,stuff,name}) => {
+const SidebarChat = ({addNewChat,open,id,stuff,name}) => {
    const [face,setFace] = useState('');
 
    useEffect(() => {

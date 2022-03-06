@@ -9,14 +9,27 @@ import { useStateValue } from './contextStateProvider';
 
 const Sidebar = () => {
    const [userName,setUserName] = useState(null);
+   const [face,setFace] = useState(null);
    const [rooms,setRooms] = useState([]);
    const [value,setValue] = useState('');
+   const [showParent,setShowParent] = useState(false);
+   const [showSeachParent,setShowSearchParent] = useState(false);
    const [{user}] = useStateValue();
-   const onSubmit = (e) => {
+   
+   const onSearchSubmit = (e) => {
       e.preventDefault();
-      if(value !== ""){
-         console.log(value)
+      setShowParent(!showParent);
+      if(showParent){
+         if(value !== ""){
+            console.log(value)
+         }
       }
+   }
+   const openMainChatScreen = (e) => {
+      e.preventDefault();
+      // if(!showParent){
+         setShowParent(!showParent)
+      // }
    }
    useEffect(() => {
       async function getRooms(){
@@ -35,18 +48,19 @@ const Sidebar = () => {
    useEffect(() => {
       if(user){
          setUserName(user.displayName)
+         setFace(user.photoURL);
       }
    },[user])
    return ( 
       <div className="sidebar">
       <div className='sidebar__header'>
-         <Avatar/> {!userName ? "" : `${userName}`}
+         <Avatar src={!face ? null : `${face}`}/> {!userName ? "" : `${userName}`}
          <div className='sidebar__headerRight'>
             <IconButton>
                <DonutLarge/>
             </IconButton>
       
-            <IconButton>
+            <IconButton onClick={openMainChatScreen}>
                <ChatOutlined/>
             </IconButton>
       
@@ -57,16 +71,16 @@ const Sidebar = () => {
       </div>
       <div className='sidebar__search'>
          <div className='sidebar__searchContainer'>
-            <IconButton onClick={onSubmit}>
-               <SearchOutlined />
+            <IconButton onClick={onSearchSubmit}>
+               <SearchOutlined open={showSeachParent}/>
             </IconButton>
             <input placeholder='Search or Start New Chat' type="text" onChange={(e) => setValue(e.target.value)} />
          </div>
       </div>
       <div className='sidebar__chats'>
-         <SidebarChat addNewChat/>
+         <SidebarChat addNewChat open={showParent}/>
          {rooms.map(
-            room => <SidebarChat key={room.id} id={room.id} stuff={room.data} name={room.data.name}/>
+            room => <SidebarChat open={!showParent} key={room.id} id={room.id} stuff={room.data} name={room.data.name}/>
          )}
       </div>
       </div>
