@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { ChatOutlined, DonutLarge, MoreVertOutlined, SearchOutlined } from '@mui/icons-material';
 import { Avatar, IconButton } from '@mui/material';
 import "./sidebar.css"; 
@@ -18,18 +18,12 @@ const Sidebar = () => {
    
    const onSearchSubmit = (e) => {
       e.preventDefault();
-      setShowParent(!showParent);
-      if(showParent){
-         if(value !== ""){
-            console.log(value)
-         }
-      }
+      if(value !== "")console.log(value);
+      else alert("Please Enter something")
    }
    const openMainChatScreen = (e) => {
       e.preventDefault();
-      // if(!showParent){
-         setShowParent(!showParent)
-      // }
+      setShowParent(!showParent)
    }
    useEffect(() => {
       async function getRooms(){
@@ -42,7 +36,6 @@ const Sidebar = () => {
             )
          });
       }
-      console.log(rooms,"");
       getRooms();
    },[]);
    useEffect(() => {
@@ -72,15 +65,25 @@ const Sidebar = () => {
       <div className='sidebar__search'>
          <div className='sidebar__searchContainer'>
             <IconButton onClick={onSearchSubmit}>
-               <SearchOutlined open={showSeachParent}/>
+               <SearchOutlined/>
             </IconButton>
             <input placeholder='Search or Start New Chat' type="text" onChange={(e) => setValue(e.target.value)} />
          </div>
       </div>
       <div className='sidebar__chats'>
-         <SidebarChat addNewChat open={showParent}/>
-         {rooms.map(
-            room => <SidebarChat open={!showParent} key={room.id} id={room.id} stuff={room.data} name={room.data.name}/>
+         {showParent === false ? (
+            <div className='sidebarChat'>
+               <div className='sidebarChat__info'>
+                  <h2>Please click Chat Icon to View Chats</h2>
+               </div>
+            </div>
+         ) : (
+            <Fragment>
+               <SidebarChat addNewChat/>
+               {rooms.map(
+                  room => <SidebarChat open={!showParent} key={room.id} id={room.id} stuff={room.data} name={room.data.name}/>
+               )}
+            </Fragment>
          )}
       </div>
       </div>
