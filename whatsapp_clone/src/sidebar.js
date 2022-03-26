@@ -26,17 +26,16 @@ const Sidebar = () => {
       setShowParent(!showParent)
    }
    useEffect(() => {
-      async function getRooms(){
-         onSnapshot(collection(firestoreDb, "whatsapp"), (doc) => {
-            setRooms(
-            doc.docs.map(d => ({
-               id:d.id,
-               data:d.data()
-            }))
-            )
-         });
-      }
-      getRooms();
+      const unsubscribe = onSnapshot(collection(firestoreDb, "whatsapp"), (doc) => {
+         setRooms(
+         doc.docs.map(d => ({
+            id:d.id,
+            data:d.data()
+         }))
+         )
+      });
+
+      return () => unsubscribe();
    },[]);
    useEffect(() => {
       if(user){

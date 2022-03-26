@@ -4,7 +4,7 @@ import { Avatar, IconButton } from '@mui/material';
 import { AttachFileOutlined, SearchOutlined, MoreVertOutlined, InsertEmoticon, MicOutlined, SendSharp } from '@mui/icons-material';
 import {useParams} from "react-router-dom";
 import { firestoreDb } from './firebase';
-import { onSnapshot, doc } from 'firebase/firestore';
+import { onSnapshot, collection, doc, query, getDocs, serverTimestamp, addDoc } from 'firebase/firestore';
 import { useStateValue } from './contextStateProvider';
 import SpeechRecognition, {
    useSpeechRecognition
@@ -20,11 +20,21 @@ const Chat = (props) => {
    const [sender,setSender] = useState(null);
    const [speechActive,setSpeechActive] = useState(true);
    const { transcript, resetTranscript } = useSpeechRecognition();
+   
    useEffect(() => {
       if(roomId){
          onSnapshot(doc(firestoreDb, "whatsapp",roomId), (d) => {
             setRoomName(d.data().name);
          });
+         // async function getD(){
+         //    const q = query(collection(firestoreDb,"whatsapp"));
+         //    const querySnapshot = await getDocs(q);
+         //    const queryData = querySnapshot.docs.map((doc) => {
+         //      // doc.data() is never undefined for query doc snapshots
+         //      console.log(doc.id, " => ", doc.data());
+         //    });
+         // }
+         // getD();
       }
    },[roomId]);
    useEffect(() => {
@@ -40,14 +50,31 @@ const Chat = (props) => {
    const createChat = () => {
       const roomName = prompt("Please Enter Name for Chat");
       if(!roomName){
-         // do Something
+         addDoc(collection(firestoreDb,"whatsapp"), {
+            name:roomName
+         })
+         
       }
    }
-   const sendMessage = (e) => {
+   const sendMessage = async (e) => {
       e.preventDefault();
-      console.log(transcript,"Transcript")
+      console.log(transcript,"Transcript");
+      const q = query(collection(firestoreDb,"whatsapp"));
+      const querySnapshot = await getDocs(q);
+      
       if(value !== ""){
          console.log("Message to be Send",value);
+         const queryData = querySnapshot.docs.map((doc) => {})
+         queryData.map(async (v) => {
+            console.log(v)
+            await addDoc(doc(firestoreDb, `whatsapp/${roomId}/messages`), {
+               userName: user.displayName,
+               message:value,
+               userImage:user.photoURL,
+               timestamp: serverTimestamp(),
+            });
+         })
+
          resetTranscript();
       }
    }
