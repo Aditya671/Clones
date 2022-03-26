@@ -12,7 +12,7 @@ import SpeechRecognition, {
 const Chat = (props) => {
    const [roomName,setRoomName] = useState('');
    const [roomFace,setRoomFace] = useState(null);
-   const [value,setValue] = useState("");
+   const [sendM,setSendM] = useState(null);
    const {roomId} = useParams();
    const [{user}] = useStateValue();
    const [sender,setSender] = useState("");
@@ -32,7 +32,7 @@ const Chat = (props) => {
             })
             ))
          });
-         console.log(messages)
+         
       }
    },[roomId]);
    // useEffect(() => {
@@ -65,20 +65,18 @@ const Chat = (props) => {
          
       }
    }
-   const sendMessage = () => {
-      // const q = query(collection(firestoreDb,"whatsapp"));
-      // const querySnapshot = await getDocs(q);
-      
-      if(value !== ""){
+   const sendMessage = (e) => {
+      e.preventDefault();
+      if(sendM !== ""){
          setDoc(doc(collection(firestoreDb, `whatsapp/${roomId}/messages`)), {
             userName: sender,
-            message:value,
+            message:sendM,
             userImage:user.photoURL,
             timestamp: serverTimestamp(),
          });
+         setSendM("")
          resetTranscript();
       }
-      setValue("a");
    }
    const MicSpeechToText = (e) => {
       e.preventDefault();
@@ -141,7 +139,7 @@ const Chat = (props) => {
             </IconButton>
             <form className='chat__footerContainer'>
                <input type="text" placeholder="Type your message" name="ChatText"
-               onChange={(e) => setValue(e.target.value)}
+               onChange={(e) => setSendM(e.target.value)}
                />
                <IconButton  onClick={sendMessage} >
                   <SendSharp/>
