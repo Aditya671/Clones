@@ -38,11 +38,13 @@
 .chat__message{
    position: relative;
    font-size: 16px;
-   padding: 8px 48px 8px 8px;
+   padding: 8px;
+   text-align: right;
    border-radius: 10px;
    width: fit-content;
-   margin-bottom: 14px;
+   margin: 22px 0 14px 0;
    background-color: #fff;
+   min-width: 80px;
 }
 .chat__sender{
    background-color: #fff;
@@ -67,7 +69,7 @@
 }
 .chat__timestamp{
    position: absolute;
-   bottom: 8px;
+   bottom: -1px;
    right: 10px;
    font-size: 10px;
    font-weight: 600;
