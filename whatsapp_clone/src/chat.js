@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState} from 'react';
 import "./chat.css";
 import { Avatar, IconButton } from '@mui/material';
 import { AttachFileOutlined, SearchOutlined, MoreVertOutlined, InsertEmoticon, MicOutlined, SendSharp } from '@mui/icons-material';
 import {useParams} from "react-router-dom";
 import { firestoreDb } from './firebase';
-import { onSnapshot, collection, doc, query, getDocs, serverTimestamp, addDoc } from 'firebase/firestore';
+import { onSnapshot, collection, doc, query, getDocs, serverTimestamp, addDoc,setDoc } from 'firebase/firestore';
 import { useStateValue } from './contextStateProvider';
 import SpeechRecognition, {
    useSpeechRecognition
  } from "react-speech-recognition";
 const Chat = (props) => {
+   const [roomName,setRoomName] = useState('');
    const [roomFace,setRoomFace] = useState(null);
    const [value,setValue] = useState("");
    const {roomId} = useParams();
    const [{user}] = useStateValue();
-   const [userName, setUserName] = useState('');
-   const [roomName,setRoomName] = useState('');
-   const [receiver,setReceiver] = useState(null);
-   const [sender,setSender] = useState(null);
+   const [messages,setMessages] = useState("");
    const [speechActive,setSpeechActive] = useState(true);
    const { transcript, resetTranscript } = useSpeechRecognition();
    
@@ -26,23 +24,31 @@ const Chat = (props) => {
          onSnapshot(doc(firestoreDb, "whatsapp",roomId), (d) => {
             setRoomName(d.data().name);
          });
-         // async function getD(){
-         //    const q = query(collection(firestoreDb,"whatsapp"));
-         //    const querySnapshot = await getDocs(q);
-         //    const queryData = querySnapshot.docs.map((doc) => {
-         //      // doc.data() is never undefined for query doc snapshots
-         //      console.log(doc.id, " => ", doc.data());
-         //    });
-         // }
-         // getD();
+         onSnapshot(collection(firestoreDb, `whatsapp/${roomId}/messages`), (d) => {
+            setMessages(d.docs.map(v => ({
+               ...v.data()
+            })
+            ))
+         });
       }
    },[roomId]);
+   // useEffect(() => {
+      // async function ola(){
+         // const q = query(collection(firestoreDb,"whatsapp"));
+         // const querySnapshot = await getDocs(q);
+         // const queryData = querySnapshot.docs.map((doc) => ({
+         //    ...doc.data(),
+         //    id:doc.id,
+         // }))
+         // }
+         // ola()
+   // },[])
    useEffect(() => {
       if(user){
          const name = user.displayName.split(" ")
-         setUserName(user.displayName);
-         setSender(name[0].charAt(0).toUpperCase() + name[0].slice(1,name[0].length))
-         setRoomFace(user.photoURL);
+         // setUserName(user.displayName);
+         // setSender(name[0].charAt(0).toUpperCase() + name[0].slice(1,name[0].length))
+         // setRoomFace(user.photoURL);
       }
       
    },[user]);
@@ -58,21 +64,24 @@ const Chat = (props) => {
    }
    const sendMessage = async (e) => {
       e.preventDefault();
-      console.log(transcript,"Transcript");
       const q = query(collection(firestoreDb,"whatsapp"));
       const querySnapshot = await getDocs(q);
       
       if(value !== ""){
-         console.log("Message to be Send",value);
-         const queryData = querySnapshot.docs.map((doc) => {})
-         queryData.map(async (v) => {
-            console.log(v)
-            await addDoc(doc(firestoreDb, `whatsapp/${roomId}/messages`), {
-               userName: user.displayName,
-               message:value,
-               userImage:user.photoURL,
-               timestamp: serverTimestamp(),
-            });
+         const queryData = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id:doc.id
+         }))
+         queryData.map(async (v,id) => {
+            if(v.id === roomId){
+               await setDoc(doc(firestoreDb, `whatsapp/${roomId}/messages`,doc.data()), {
+                  userName: user.displayName,
+                  message:value,
+                  userImage:user.photoURL,
+                  timestamp: serverTimestamp(),
+               });
+            }
+
          })
 
          resetTranscript();
@@ -110,15 +119,32 @@ const Chat = (props) => {
             </div>
          </div>
          <div className='chat__body'>
-            <p className='chat__message chat__sender'>Hey Guys
-               <span className='chat__name'>{!receiver ? "Receiver" : `${receiver}`}</span>
-               <span className='chat__timestamp'>3:25pm</span>
-            </p>
-            <p className='chat__message chat__receiver'>
-                  How is your day going and Are u all right. There's many things going on in this earth. 
-               <span className='chat__name'>{!sender ? "Sender" : `${sender}`}</span>
-               <span className='chat__timestamp'>4:25pm</span>
-            </p>
+            {messages ? 
+            messages.map((mess) => {
+            <Fragment>
+               <p className='chat__message chat__sender'>{mess.userName} 
+                  <span className='chat__name'>{mess.message}</span>
+                  <span className='chat__timestamp'>3:25pm</span>
+               </p>
+               <p className='chat__message chat__receiver'>
+                  {mess.message} 
+                  <span className='chat__name'>{mess.userName}</span>
+                  <span className='chat__timestamp'>4:25pm</span>
+               </p>
+            </Fragment>         
+            }) : 
+               <Fragment>
+                  <p className='chat__message chat__sender'>message
+                     <span className='chat__name'>sender</span>
+                     <span className='chat__timestamp'>3:25pm</span>
+                  </p>
+                  <p className='chat__message chat__receiver'>
+                     message
+                     <span className='chat__name'>Sender</span>
+                     <span className='chat__timestamp'>4:25pm</span>
+                  </p>
+               </Fragment>
+            }
          </div>
          <div className='chat__footer'>
             <IconButton>
@@ -126,7 +152,7 @@ const Chat = (props) => {
             </IconButton>
             <form className='chat__footerContainer'>
                <input type="text" placeholder="Type your message" name="ChatText"
-               onChange={e => {setValue(e.target.value); console.log(e)}}
+               onChange={e => setValue(e.target.value)}
                />
                {/* <span>{value + transcript}</span> */}
                <IconButton onClick={sendMessage}>
