@@ -5,6 +5,7 @@
    border-right: 1px solid #d3d3d3;
 }
 .sidebar__header{
+   position: relative;
    display: flex;
    justify-content: space-between;
    align-items: center;
@@ -63,6 +64,8 @@
 }
 .sidebarChat__info > h2{
    font-size: 16px;
+   text-decoration: none;
+   color: #000;
    margin-bottom: 3px;
 }
 .sidebarChat__info{
@@ -70,4 +73,6 @@
 }
 .sidebarChat__info > p{
    margin: 3px 0 8px 8px;
+   text-decoration: none;
+   color: #000;
 }

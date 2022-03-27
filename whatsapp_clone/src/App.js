@@ -14,6 +14,8 @@ function App() {
    useEffect(() => {
       if(user){
          setUsers(user.displayName)
+      }else{
+         setUsers(null);
       }
    },[user]);
    useEffect(() => {
@@ -25,7 +27,10 @@ function App() {
             });
          }
          else { 
-            //
+            dispatch({
+               type:ActionTypes.SET_USER,
+               user:null
+            });
          }
       });
    },[])

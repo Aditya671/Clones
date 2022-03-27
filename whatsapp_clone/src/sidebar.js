@@ -6,6 +6,7 @@ import SidebarChat from './sidebarChat';
 import {firestoreDb} from './firebase.js';
 import { collection, onSnapshot } from "firebase/firestore";
 import { useStateValue } from './contextStateProvider';
+import MenuBar from './menuBar';
 
 const Sidebar = () => {
    const [userName,setUserName] = useState(null);
@@ -14,6 +15,7 @@ const Sidebar = () => {
    const [value,setValue] = useState('');
    const [showParent,setShowParent] = useState(false);
    const [showSeachParent,setShowSearchParent] = useState(false);
+   const [showSideMenu,setShowSideMenu] = useState(false);
    const [{user}] = useStateValue();
    
    const onSearchSubmit = (e) => {
@@ -24,6 +26,10 @@ const Sidebar = () => {
    const openMainChatScreen = (e) => {
       e.preventDefault();
       setShowParent(!showParent)
+   }
+   const openMenu = (e) => {
+      e.preventDefault();
+      setShowSideMenu(!showSideMenu);
    }
    useEffect(() => {
       const unsubscribe = onSnapshot(collection(firestoreDb, "whatsapp"), (doc) => {
@@ -56,10 +62,14 @@ const Sidebar = () => {
                <ChatOutlined/>
             </IconButton>
       
-            <IconButton>
+            <IconButton onClick={() =>setShowSideMenu(!showSideMenu)}>
                <MoreVertOutlined/>
+               {showSideMenu ? (<Fragment>
+            <MenuBar></MenuBar>
+         </Fragment>) : null}
             </IconButton>
          </div>
+         
       </div>
       <div className='sidebar__search'>
          <div className='sidebar__searchContainer'>

@@ -1,0 +1,22 @@
+.menuBar{
+   position: absolute;
+   min-width: 152px;
+   background: #ededed;
+   bottom: auto;
+   right: 17px;
+   border-radius: 8px;
+   top: 30px;
+   border: 1px solid #aaa;
+   box-shadow: 0 0 4px 2px rgb(0 0 0 / 40%);
+}
+.menuBar__link{
+   margin: 8px 0;
+   text-align: right;
+}
+.menuBar__link p{
+   font-size: 18px;
+}
+.menuBar__link button{
+   margin:0!important;
+   padding: 0 8px!important;
+}

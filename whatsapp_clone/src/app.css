@@ -22,7 +22,29 @@ input:focus{
    width: 90vh;
    box-shadow: -1px 4px 20px -6px rgba(0,0,0,0.2);
 }
-
+.app__LoginCard {
+   min-height: 320px;
+   min-width: 400px;
+   position: absolute;
+   top: 25%;
+   left: 25%;
+   background: #e6e6e6;
+   border-radius: 8px;
+   border: 1px solid #aaa;
+   display: flex;
+   align-items: center;
+   text-align: center;
+   justify-content: center;
+}
+.app__LoginCard button{
+   padding: 8px;
+   margin-top: 8px;
+   background: red;
+   border: navajowhite;
+   border-radius: 8px;
+   font-size: 18px;
+   color: #ffffff;
+}
 @media screen and (max-width:1200px){
    .app__body{
       min-width: 1000px;
